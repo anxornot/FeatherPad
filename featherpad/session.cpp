@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Pedram Pourang (aka Tsu Jan) 2014-2022 <tsujan2000@gmail.com>
+ * Copyright (C) Pedram Pourang (aka Tsu Jan) 2014-2026 <tsujan2000@gmail.com>
  *
  * FeatherPad is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -38,7 +38,7 @@ SessionDialog::SessionDialog (QWidget *parent):QDialog (parent), ui (new Ui::Ses
     ui->listWidget->setContextMenuPolicy (Qt::CustomContextMenu);
     filterTimer_ = nullptr;
 
-    connect (ui->listWidget, &QListWidget::itemDoubleClicked, [=]{openSessions();});
+    connect (ui->listWidget, &QListWidget::itemDoubleClicked, this, [this]{openSessions();});
     connect (ui->listWidget, &QListWidget::itemSelectionChanged, this, &SessionDialog::selectionChanged);
     connect (ui->listWidget, &QWidget::customContextMenuRequested, this, &SessionDialog::showContextMenu);
     connect (ui->listWidget->itemDelegate(), &QAbstractItemDelegate::commitData, this, &SessionDialog::OnCommittingName);
@@ -73,13 +73,13 @@ SessionDialog::SessionDialog (QWidget *parent):QDialog (parent), ui (new Ui::Ses
     connect (ui->saveBtn, &QAbstractButton::clicked, this, &SessionDialog::saveSession);
     connect (ui->lineEdit, &QLineEdit::returnPressed, this, &SessionDialog::saveSession);
     /* we don't want to open a session by pressing Enter inside the line-edit */
-    connect (ui->lineEdit, &LineEdit::receivedFocus, [=]{ui->openBtn->setDefault (false);});
-    connect (ui->lineEdit, &QLineEdit::textEdited, [=](const QString &text){ui->saveBtn->setEnabled (!text.isEmpty());});
+    connect (ui->lineEdit, &LineEdit::receivedFocus, this, [this]{ui->openBtn->setDefault (false);});
+    connect (ui->lineEdit, &QLineEdit::textEdited, this, [this](const QString &text){ui->saveBtn->setEnabled (!text.isEmpty());});
     connect (ui->openBtn, &QAbstractButton::clicked, this, &SessionDialog::openSessions);
     connect (ui->actionOpen, &QAction::triggered, this, &SessionDialog::openSessions);
-    connect (ui->clearBtn, &QAbstractButton::clicked, [=]{showPrompt (CLEAR);});
-    connect (ui->removeBtn, &QAbstractButton::clicked, [=]{showPrompt (REMOVE);});
-    connect (ui->actionRemove, &QAction::triggered, [=]{showPrompt (REMOVE);});
+    connect (ui->clearBtn, &QAbstractButton::clicked, this, [this]{showPrompt (CLEAR);});
+    connect (ui->removeBtn, &QAbstractButton::clicked, this, [this]{showPrompt (REMOVE);});
+    connect (ui->actionRemove, &QAction::triggered, this, [this]{showPrompt (REMOVE);});
 
     connect (ui->actionRename, &QAction::triggered, this, &SessionDialog::renameSession);
 

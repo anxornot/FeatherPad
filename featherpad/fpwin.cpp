@@ -1993,8 +1993,8 @@ void FPwin::executeProcess()
             }
         });
         /* old-fashioned: connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),... */
-        connect (process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-                 [=](int /*exitCode*/, QProcess::ExitStatus /*exitStatus*/) {process->deleteLater();});
+        connect (process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this,
+                 [=, this](int /*exitCode*/, QProcess::ExitStatus /*exitStatus*/) {process->deleteLater();});
         QString command = config.getExecuteCommand();
         if (!command.isEmpty())
         {
@@ -2703,7 +2703,7 @@ void FPwin::disconnectLambda()
 void FPwin::onOpeningHugeFiles()
 {
     disconnect (this, &FPwin::finishedLoading, this, &FPwin::onOpeningHugeFiles);
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         showWarningBar ("<center><b><big>" + tr ("Huge file(s) not opened!") + "</big></b></center>\n"
                         + "<center>" + tr ("FeatherPad does not open files larger than 100 MiB.") + "</center>");
     });
@@ -2712,7 +2712,7 @@ void FPwin::onOpeningHugeFiles()
 void FPwin::onOpeninNonTextFiles()
 {
     disconnect (this, &FPwin::finishedLoading, this, &FPwin::onOpeninNonTextFiles);
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         showWarningBar ("<center><b><big>" + tr ("Non-text file(s) not opened!") + "</big></b></center>\n"
                         + "<center><i>" + tr ("See Preferences → Files → Do not permit opening of non-text files") + "</i></center>",
                         20);
@@ -2722,7 +2722,7 @@ void FPwin::onOpeninNonTextFiles()
 void FPwin::onPermissionDenied()
 {
     disconnect (this, &FPwin::finishedLoading, this, &FPwin::onPermissionDenied);
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         showWarningBar ("<center><b><big>" + tr ("Some file(s) could not be opened!") + "</big></b></center>\n"
                         + "<center>" + tr ("You may not have the permission to read.") + "</center>");
     });
@@ -2733,7 +2733,7 @@ void FPwin::onOpeningUneditable()
     disconnect (this, &FPwin::finishedLoading, this, &FPwin::onOpeningUneditable);
     /* A timer is needed here because the scrollbar position is restored on reloading by a
        lambda connection. Timers are also used in similar places for the sake of certainty. */
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         showWarningBar ("<center><b><big>" + tr ("Uneditable file(s)!") + "</big></b></center>\n"
                         + "<center>" + tr ("Non-text files or files with huge lines cannot be edited.") + "</center>");
     });
@@ -2742,7 +2742,7 @@ void FPwin::onOpeningUneditable()
 void FPwin::onOpeningNonexistent()
 {
     disconnect (this, &FPwin::finishedLoading, this, &FPwin::onOpeningNonexistent);
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         /* show the bar only if the current file doesn't exist at this very moment */
         if (TabPage *tabPage = qobject_cast< TabPage *>(ui->tabWidget->currentWidget()))
         {
@@ -2807,7 +2807,7 @@ WarningBar* FPwin::showWarningBar (const QString& message, int timeout, bool sta
 /*************************/
 void FPwin::showRootWarning()
 {
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         showWarningBar ("<center><b><big>" + tr ("Root Instance") + "</big></b></center>",
                         10, true);
     });
@@ -3521,7 +3521,7 @@ void FPwin::saveAsRoot (const QString& fileName, TabPage *tabPage,
         lockWindow (tabPage, true); // wait until the following process is finished
         QProcess *fileProcess = new QProcess (this);
         connect (fileProcess, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), textEdit,
-                 [=](int exitCode, QProcess::ExitStatus exitStatus) {
+                 [=, this](int exitCode, QProcess::ExitStatus exitStatus) {
             lockWindow (tabPage, false);
             QFile::remove (fname);
             if (exitStatus != QProcess::NormalExit || exitCode != 0)
@@ -6083,7 +6083,7 @@ void FPwin::autoSave()
        and saveFile(), we can't use the latter here.
        We especially don't show any prompt or warning here. */
     if (autoSaverPause_.isValid()) return;
-    QTimer::singleShot (0, this, [=]() {
+    QTimer::singleShot (0, this, [this]() {
         if (!autoSaver_ || !autoSaver_->isActive())
             return;
         saveAllFiles (false); // without warning

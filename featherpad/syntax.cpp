@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Pedram Pourang (aka Tsu Jan) 2014-2025 <tsujan2000@gmail.com>
+ * Copyright (C) Pedram Pourang (aka Tsu Jan) 2014-2026 <tsujan2000@gmail.com>
  *
  * FeatherPad is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -307,7 +307,7 @@ void FPwin::syntaxHighlighting (TextEdit *textEdit, bool highlight, const QStrin
         Config config = static_cast<FPsingleton*>(qApp)->getConfig();
         if (textEdit->getSize() > config.getMaxSHSize()*1024*1024)
         {
-            QTimer::singleShot (100, textEdit, [=]() {
+            QTimer::singleShot (100, textEdit, [=, this]() {
                 if (TabPage *tabPage = qobject_cast<TabPage*>(ui->tabWidget->currentWidget()))
                 {
                     if (tabPage->textEdit() == textEdit)
