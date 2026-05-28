@@ -1983,7 +1983,7 @@ void FPwin::executeProcess()
         process->setObjectName (fName); // to put it into the message dialog
         connect (process, &QProcess::readyReadStandardOutput, this, &FPwin::displayOutput);
         connect (process, &QProcess::readyReadStandardError, this, &FPwin::displayError);
-        connect (process, &QProcess::errorOccurred, this, [this, process] (QProcess::ProcessError error) {
+        connect (process, &QProcess::errorOccurred, this, [this, process](QProcess::ProcessError error) {
             if (error == QProcess::FailedToStart)
             {
                 showWarningBar ("<center><b><big>" + tr ("Cannot start process!") + "</big></b></center>"
@@ -1994,7 +1994,7 @@ void FPwin::executeProcess()
         });
         /* old-fashioned: connect(process, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),... */
         connect (process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this,
-                 [=, this](int /*exitCode*/, QProcess::ExitStatus /*exitStatus*/) {process->deleteLater();});
+                 [process](int /*exitCode*/, QProcess::ExitStatus /*exitStatus*/) {process->deleteLater();});
         QString command = config.getExecuteCommand();
         if (!command.isEmpty())
         {

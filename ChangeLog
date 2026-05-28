@@ -7,7 +7,7 @@ V1.6.4
  * Fixed side-pane tooltips with tab DND.
  * Bumped the minimum version of Qt to 6.5.
  * Fixed macOS help bundle resource.
- * Fixed new compilation warnings about implicit capturing of 'this'.
+ * Silenced new compilation warnings about implicit capturing of 'this'.
 
 V1.6.3
 ---------
