@@ -5065,7 +5065,7 @@ void FPwin::detachTab()
                                                          : hasFinalTarget ? QIcon (":icons/hasTarget.svg")
                                                                           : QIcon(),
                                                   fname, lw);
-        lw->setToolTip (tooltip);
+        lwi->setToolTip (tooltip);
         dropTarget->sideItems_.insert (lwi, tabPage);
         lw->addItem (lwi);
         lw->setCurrentItem (lwi);
@@ -5326,7 +5326,7 @@ void FPwin::dropTab (const QString& str, QObject *source)
                                                          : hasFinalTarget ? QIcon (":icons/hasTarget.svg")
                                                                           : QIcon(),
                                                   fname, lw);
-        lw->setToolTip (tooltip);
+        lwi->setToolTip (tooltip);
         sideItems_.insert (lwi, tabPage);
         lw->addItem (lwi);
         lw->setCurrentItem (lwi);
