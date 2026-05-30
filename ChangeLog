@@ -6,6 +6,7 @@ V1.6.4
  * When running executable scripts, covered a case where a process failed to start.
  * Fixed side-pane tooltips with tab DND.
  * Bumped the minimum version of Qt to 6.5.
+ * Fixed using of dictionary encoding with Hunspell.
  * Fixed macOS help bundle resource.
  * Silenced new compilation warnings about implicit capturing of 'this'.
 

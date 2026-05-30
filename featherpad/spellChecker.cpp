@@ -1,5 +1,5 @@
 /*
- * Copyright (C) Pedram Pourang (aka Tsu Jan) 2019-2024 <tsujan2000@gmail.com>
+ * Copyright (C) Pedram Pourang (aka Tsu Jan) 2019-2026 <tsujan2000@gmail.com>
  *
  * FeatherPad is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -30,17 +30,6 @@
 
 namespace FeatherPad {
 
-static inline QStringConverter::Encoding spellEncoding (const QString &encoding)
-{
-    return encoding.compare ("UTF-8", Qt::CaseInsensitive) == 0
-               ? QStringConverter::Utf8
-           : encoding.compare ("UTF-16", Qt::CaseInsensitive) == 0
-               ? QStringConverter::Utf16
-           : encoding.compare ("UTF-32", Qt::CaseInsensitive) == 0
-               ? QStringConverter::Utf32
-           : QStringConverter::Latin1;
-}
-/*************************/
 SpellChecker::SpellChecker (const QString& dictionaryPath, const QString& userDictionary)
 {
     userDictionary_ = userDictionary;
@@ -69,7 +58,10 @@ SpellChecker::SpellChecker (const QString& dictionaryPath, const QString& userDi
         }
         _affixFile.close();
     }
-    encoding_ = spellEncoding (encoding);
+    encoding_ = encoding.compare ("UTF-8",  Qt::CaseInsensitive) == 0 ? QStringConverter::Utf8 :
+                encoding.compare ("UTF-16", Qt::CaseInsensitive) == 0 ? QStringConverter::Utf16 :
+                encoding.compare ("UTF-32", Qt::CaseInsensitive) == 0 ? QStringConverter::Utf32 :
+                QStringConverter::Latin1;
 
     if (!userDictionary_.isEmpty())
     {
@@ -116,13 +108,13 @@ std::string SpellChecker::encodedWord (const QString &word) const
 {
     QStringEncoder encoder (encoding_);
     const QByteArray b = encoder.encode (word);
-    return std::string (b.constData(), static_cast<size_t>(b.size()));
+    return b.toStdString();
 }
 /*************************/
 QString SpellChecker::decodedWord (const std::string &word) const
 {
     QStringDecoder decoder (encoding_);
-    return decoder.decode (QByteArray (word.data(), static_cast<qsizetype>(word.size())));
+    return decoder.decode (QByteArray::fromStdString(word));
 }
 /*************************/
 void SpellChecker::addToUserWordlist (const QString& word)
