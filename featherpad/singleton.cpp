@@ -20,6 +20,7 @@
 #include <QDir>
 #include <QScreen>
 #include <QDialog>
+#include <QWindow>
 #include <QDBusConnection>
 #include <QDBusInterface>
 
@@ -328,8 +329,8 @@ void FPsingleton::handleInfo (const QStringList &info)
         for (int i = 0; i < Wins.count(); ++i)
         {
             FPwin *thisWin = Wins.at (i);
-#ifdef HAS_X11
             WId id = thisWin->winId();
+#ifdef HAS_X11
             long whichDesktop = -1;
             if (isX11_)
                 whichDesktop = onWhichDesktop (id);
@@ -372,6 +373,8 @@ void FPsingleton::handleInfo (const QStringList &info)
                         thisWin->dummyWidget->showMinimized();
                         QTimer::singleShot (0, thisWin->dummyWidget, &QWidget::hide);
                     }
+                    else if (isWayland_ && !thisWin->windowHandle()->isExposed())
+                        continue; // rely on how the Wayland compositor exposes the window
 
                     /* and then, open tab(s) in the current FeatherPad window... */
                     if (filesList.isEmpty())

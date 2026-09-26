@@ -32,7 +32,7 @@
 int main (int argc, char **argv)
 {
     const QString name = "FeatherPad";
-    const QString version = "1.6.4";
+    const QString version = "1.6.5";
 
     FeatherPad::FPsingleton singleton (argc, argv);
     singleton.setApplicationName (name);
